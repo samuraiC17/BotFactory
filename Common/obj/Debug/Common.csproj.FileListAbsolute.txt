@@ -1,0 +1,5 @@
+c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Common\bin\Debug\Common.dll
+c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Common\bin\Debug\Common.pdb
+c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
+c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Common\obj\Debug\Common.dll
+c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Common\obj\Debug\Common.pdb
