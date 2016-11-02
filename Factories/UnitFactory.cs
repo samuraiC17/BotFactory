@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BotFactory.Common;
+using System.Threading;
 
 namespace BotFactory.Factories
 {
@@ -19,8 +20,8 @@ namespace BotFactory.Factories
         public int QueueCapacity { get; set; }
         public int StorageCapacity { get; set; }
         public TimeSpan QueueTime { get; set; }
-        public int QueueFreeSlots { get; set; }
-        public int StorageFreeSlots { get; set; }
+        public int QueueFreeSlots { get { return QueueCapacity - Queue.Count; } }
+        public int StorageFreeSlots { get { return StorageCapacity - Storage.Count; } }
 
         private static object isBusy = new Object();
 
@@ -31,69 +32,64 @@ namespace BotFactory.Factories
             Storage = new List<ITestingUnit>();
             QueueCapacity = queueCapacity;
             StorageCapacity = storageCapacity;
-            QueueFreeSlots = queueCapacity;
-            StorageFreeSlots = storageCapacity;
         }
 
-        public async Task<bool> AddWorkableUnitToQueue(Type model, string name, Coordinates parkingPos, Coordinates workingPos)
+        public bool AddWorkableUnitToQueue(Type model, string name, Coordinates parkingPos, Coordinates workingPos)
         {
             FactoryQueueElement queuedElement = null;
-            if (QueueFreeSlots > 0)
+            lock (isBusy)
             {
-                queuedElement = new FactoryQueueElement()
+
+                if (QueueFreeSlots > 0)
                 {
-                    Name = name,
-                    Model = model,
-                    ParkingPos = parkingPos,
-                    WorkingPos = workingPos
-                };
-                Queue.Add(queuedElement);
-                QueueFreeSlots--;
+                    queuedElement = new FactoryQueueElement()
+                    {
+                        Name = name,
+                        Model = model,
+                        ParkingPos = parkingPos,
+                        WorkingPos = workingPos
+                    };
+                    Queue.Add(queuedElement);
+                }
             }
-            var result = await Task.Run(() =>
-              {
-                  lock (isBusy)
-                  {
-                      return AddWorkableUnitToStorage(queuedElement);
-                  }
-              });
+
+            bool result = false;
+            Thread thread = new Thread(() =>
+            {
+                lock (isBusy)
+                {
+                    result = AddWorkableUnitToStorage(queuedElement);
+                }
+            });
+
+            thread.Start();
 
             if (Queue.Contains(queuedElement))
-                RemoveFromQueue(queuedElement);
-
+                Queue.Remove(queuedElement);
             return result;
         }
 
-        private void RemoveFromQueue(FactoryQueueElement queuedElement)
+        private bool AddWorkableUnitToStorage(FactoryQueueElement queuedElement)
         {
-            Queue.Remove(queuedElement);
-            QueueFreeSlots++;
-        }
+            ITestingUnit newUnit = null;
+            Thread thread = new Thread(() =>
+            {
+                if (StorageFreeSlots > 0 && queuedElement != null)
+                {
+                    newUnit = (ITestingUnit)Activator.CreateInstance(queuedElement.Model);
+                    Thread.Sleep(TimeSpan.FromSeconds(newUnit.BuildTime));
+                    newUnit.ParkingPos = queuedElement.ParkingPos;
+                    newUnit.WorkingPos = queuedElement.WorkingPos;
+                    newUnit.CurrentPos = queuedElement.ParkingPos;
+                    newUnit.Name = queuedElement.Name;
+                    newUnit.Model = queuedElement.Model.Name;
 
-        private async Task<bool> AddWorkableUnitToStorage(FactoryQueueElement queuedElement)
-        {
-            var result = await Task.Run(async delegate
-          {
-              ITestingUnit newUnit = null;
-
-              if (StorageFreeSlots > 0 && queuedElement != null)
-              {
-                  newUnit = (ITestingUnit)Activator.CreateInstance(queuedElement.Model);
-                  await Task.Delay(TimeSpan.FromSeconds(newUnit.BuildTime));
-                  newUnit.ParkingPos = queuedElement.ParkingPos;
-                  newUnit.WorkingPos = queuedElement.WorkingPos;
-                  newUnit.CurrentPos = queuedElement.ParkingPos;
-                  newUnit.Name = queuedElement.Name;
-                  newUnit.Model = queuedElement.Model.Name;
-
-                  Storage.Add(newUnit);
-                  StorageFreeSlots--;
-                  RemoveFromQueue(queuedElement);
-                  return true;
-              }
-              return false;
-          });
-            return result;
+                    Storage.Add(newUnit);
+                    Queue.Remove(queuedElement);
+                }
+            });
+            thread.Start();
+            return newUnit != null;
         }
     }
 }

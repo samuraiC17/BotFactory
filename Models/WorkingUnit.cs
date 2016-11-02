@@ -20,17 +20,14 @@ namespace BotFactory.Models
 
         }
 
-        public virtual async Task<bool> WorkBegins()
+        public virtual bool WorkBegins()
         {
-            var result = await Move(CurrentPos, WorkingPos);
-            return result;
+            return Move(CurrentPos, WorkingPos);
         }
 
-        public virtual async Task<bool> WorkEnds()
+        public virtual bool WorkEnds()
         {
-            var result = await Move(CurrentPos, ParkingPos);
-            return result;
-
+            return Move(CurrentPos, ParkingPos);
         }
     }
 }

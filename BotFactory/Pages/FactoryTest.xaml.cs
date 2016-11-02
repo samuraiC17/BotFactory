@@ -36,14 +36,14 @@ namespace BotFactory.Pages
             
         }
 
-        private async void AddUnitToQueue_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void AddUnitToQueue_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (ModelsList.SelectedIndex >= 0 && !String.IsNullOrEmpty(UnitName.Text))
             {
 
                 Type item = (Type)ModelsList.SelectedItem;
                 var name = UnitName.Text;
-                await _dataContext.Builder.AddWorkableUnitToQueue(item, name, new Coordinates(0, 0), new Coordinates(10, 10));
+                _dataContext.Builder.AddWorkableUnitToQueue(item, name, new Coordinates(0, 0), new Coordinates(10, 10));
                 //MessageBox.Show(new Reporting.StatusChangedEventArgs("blaal").NewStatus);
                  _dataContext.ForceUpdate();
             }

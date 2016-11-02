@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BotFactory.Models
@@ -20,20 +21,20 @@ namespace BotFactory.Models
             Name = name;
         }
 
-        public async Task<bool> Move(Coordinates current, Coordinates target)
+        public bool Move(Coordinates current, Coordinates target)
         {
-            var result = await Task.Run(() =>
-               {
-                   if ((CurrentPos.Equals(current)
+            Thread thread = new Thread(() => {
+                if ((CurrentPos.Equals(current)
                    && !current.Equals(target)))
                    {
                        Task.Delay((int)Vector.FromCoordinates(current, target).Length);
                        CurrentPos.X = target.X;
                        CurrentPos.Y = target.Y;
                    }
-                   return CurrentPos.Equals(target);
                });
-            return result;
+            thread.Start();
+
+            return CurrentPos.Equals(target); ;
         }
     }
 }

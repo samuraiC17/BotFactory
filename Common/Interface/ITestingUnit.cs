@@ -14,13 +14,13 @@ namespace BotFactory.Common.Interface
         string Name { get; set; }
         Coordinates CurrentPos { get; set; }
 
-        Task<bool> Move(Coordinates current, Coordinates target);
+        bool Move(Coordinates current, Coordinates target);
 
         Coordinates ParkingPos { get; set; }
         Coordinates WorkingPos { get; set; }
         bool IsWorking { get; set; }
-        Task<bool> WorkBegins();
-        Task<bool> WorkEnds();
+        bool WorkBegins();
+        bool WorkEnds();
 
     }
 }

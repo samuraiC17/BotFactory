@@ -24,12 +24,12 @@ namespace BotFactory.Pages
             _unitDataContext.IBot = unit;
         }
         
-        private async void ButtonWork_Click(object sender, RoutedEventArgs e)
+        private void ButtonWork_Click(object sender, RoutedEventArgs e)
         {
             if (_unitDataContext.IBot != null)
             {
                 newState("a bien reçus l'ordre d'aller au travail.");
-                var response = await _unitDataContext.IBot.WorkBegins();
+                var response = _unitDataContext.IBot.WorkBegins();
                 _unitDataContext.Response = response;
                 _unitDataContext.Working = _unitDataContext.IBot.IsWorking;
                 _unitDataContext.CurrentPos = _unitDataContext.IBot.CurrentPos;
@@ -38,12 +38,12 @@ namespace BotFactory.Pages
             }
         }
 
-        private async void ButtonStop_Click(object sender, RoutedEventArgs e)
+        private void ButtonStop_Click(object sender, RoutedEventArgs e)
         {
             if (_unitDataContext.IBot != null)
             {
                 newState("a bien reçus l'ordre d'aller à sa place de parking.");
-                var response = await _unitDataContext.IBot.WorkEnds();
+                var response = _unitDataContext.IBot.WorkEnds();
                 _unitDataContext.Response = response;
                 _unitDataContext.Working = _unitDataContext.IBot.IsWorking;
                 _unitDataContext.CurrentPos = _unitDataContext.IBot.CurrentPos;

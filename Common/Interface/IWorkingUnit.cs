@@ -12,7 +12,7 @@ namespace BotFactory.Common.Interface
         Coordinates ParkingPos { get; set; }
         Coordinates WorkingPos { get; set; }
         bool IsWorking { get; set; }
-        Task<bool> WorkBegins();
-        Task<bool> WorkEnds();
+        bool WorkBegins();
+        bool WorkEnds();
     }
 }

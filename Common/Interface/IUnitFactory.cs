@@ -15,10 +15,10 @@ namespace BotFactory.Common.Interface
         int StorageCapacity { get; set; }
         TimeSpan QueueTime { get; set; }
 
-        int QueueFreeSlots { get; set; }
-        int StorageFreeSlots { get; set; }
+        int QueueFreeSlots { get;  }
+        int StorageFreeSlots { get; }
 
-        Task<bool> AddWorkableUnitToQueue(Type model, string name,  Coordinates parkingPos, Coordinates workingPos);
+        bool AddWorkableUnitToQueue(Type model, string name, Coordinates parkingPos, Coordinates workingPos);
 
         FactoryProgressEventHandler FactoryProgress { get; set; }
     }

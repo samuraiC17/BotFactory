@@ -13,6 +13,6 @@ namespace BotFactory.Common.Interface
         string Name { get; set; }
         Coordinates CurrentPos { get; set; }
 
-        Task<bool> Move(Coordinates current, Coordinates target);
+        bool Move(Coordinates current, Coordinates target);
     }
 }
