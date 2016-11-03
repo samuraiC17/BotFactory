@@ -7,3 +7,12 @@ c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Factorie
 c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Factories\obj\Debug\Factories.pdb
 c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Factories\bin\Debug\Models.dll
 c:\users\c17 developer\documents\visual studio 2015\Projects\BotFactory\Factories\bin\Debug\Models.pdb
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\bin\Debug\Factories.dll
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\bin\Debug\Factories.pdb
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\bin\Debug\Common.dll
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\bin\Debug\Models.dll
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\bin\Debug\Common.pdb
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\bin\Debug\Models.pdb
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\obj\Debug\Factories.csprojResolveAssemblyReference.cache
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\obj\Debug\Factories.dll
+C:\Users\C17 Developer\Source\Repos\BotFactory\Factories\obj\Debug\Factories.pdb

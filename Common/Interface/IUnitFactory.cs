@@ -9,8 +9,8 @@ namespace BotFactory.Common.Interface
 {
     public interface IUnitFactory
     {
-        List<IFactoryQueueElement> Queue { get; set; }
-        List<ITestingUnit> Storage { get; set; }
+        List<IFactoryQueueElement> Queue { get; }
+        List<ITestingUnit> Storage { get; }
         int QueueCapacity { get; set; }
         int StorageCapacity { get; set; }
         TimeSpan QueueTime { get; set; }

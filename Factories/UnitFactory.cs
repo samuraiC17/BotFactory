@@ -7,13 +7,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BotFactory.Common;
+using BotFactory.Reporting;
 
 namespace BotFactory.Factories
 {
     public class UnitFactory : IUnitFactory
     {
-        public List<IFactoryQueueElement> Queue { get; set; }
-        public List<ITestingUnit> Storage { get; set; }
+        private List<IFactoryQueueElement> _queue;
+        public List<IFactoryQueueElement> Queue
+        {
+            get
+            {
+                return _queue.ToList();
+            }
+        }
+
+        private List<ITestingUnit> _storage;
+
+        public List<ITestingUnit> Storage
+        {
+            get
+            {
+                return _storage.ToList();
+            }
+        }
 
         public FactoryProgressEventHandler FactoryProgress { get; set; }
         public int QueueCapacity { get; set; }
@@ -27,8 +44,8 @@ namespace BotFactory.Factories
 
         public UnitFactory(int queueCapacity, int storageCapacity)
         {
-            Queue = new List<IFactoryQueueElement>();
-            Storage = new List<ITestingUnit>();
+            _queue = new List<IFactoryQueueElement>();
+            _storage = new List<ITestingUnit>();
             QueueCapacity = queueCapacity;
             StorageCapacity = storageCapacity;
             QueueFreeSlots = queueCapacity;
@@ -47,7 +64,8 @@ namespace BotFactory.Factories
                     ParkingPos = parkingPos,
                     WorkingPos = workingPos
                 };
-                Queue.Add(queuedElement);
+                _queue.Add(queuedElement);
+                OnUnitStatusChanged(new StatusChangedEventArgs() { NewStatus = String.Format("Element on Queue => {0}", _queue.First().Name) });
                 QueueFreeSlots--;
             }
             var result = await Task.Run(() =>
@@ -58,15 +76,23 @@ namespace BotFactory.Factories
                   }
               });
 
-            if (Queue.Contains(queuedElement))
+            if (_queue.Contains(queuedElement))
                 RemoveFromQueue(queuedElement);
 
             return result;
         }
 
+        private void OnUnitStatusChanged(StatusChangedEventArgs statusChangedEventArgs)
+        {
+            if (FactoryProgress != null)
+            {
+                FactoryProgress(this, statusChangedEventArgs);
+            }
+        }
+
         private void RemoveFromQueue(FactoryQueueElement queuedElement)
         {
-            Queue.Remove(queuedElement);
+            _queue.Remove(queuedElement);
             QueueFreeSlots++;
         }
 
@@ -86,9 +112,11 @@ namespace BotFactory.Factories
                   newUnit.Name = queuedElement.Name;
                   newUnit.Model = queuedElement.Model.Name;
 
-                  Storage.Add(newUnit);
+                  _storage.Add(newUnit);
                   StorageFreeSlots--;
                   RemoveFromQueue(queuedElement);
+                  OnUnitStatusChanged(new StatusChangedEventArgs() { NewStatus = String.Format("Element deleted from Queue => {0}", _queue.First().Name) });
+                  OnUnitStatusChanged(new StatusChangedEventArgs() { NewStatus = String.Format("Element on _storage => {0}", _storage.First().Name) });
                   return true;
               }
               return false;
